@@ -1,13 +1,15 @@
+<!-- Ultimate Game Stash file--> 
+<!-- For the regularly updating doc go to https://docs.google.com/document/d/1_FmH3BlSBQI7FGgAQL59-ZPe8eCxs35wel6JUyVaG8Q/ -->
+
 <!doctype html>
 <html lang="en-us">
 
 <head>
-    <base href="https://cdn.jsdelivr.net/gh/Hell0wase/nzportable/">
+    <base href="https://cdn.jsdelivr.net/gh/Hell0wase/nzportable@main/">
     <meta charset="utf-8">
     <title>NZ: Portable</title>
     <link rel="icon" href="nzportable.ico">
     <style>
-        /* ... (CSS is unchanged) ... */
         html,
         body {
             background-color: #000000;
@@ -51,15 +53,12 @@
     </div>
     <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" hidden=1></canvas>
     <script type='text/javascript'>
-        // Define the base CDN URL once for easy management
-        const CDN_BASE = "https://cdn.jsdelivr.net/gh/Hell0wase/nzportable/";
-
+        // connect to canvas
         var Module = {
-            // ⚠️ CHANGE 1: Hardcode the full CDN URLs for the game assets here.
             files: {
-                "default.fmf": CDN_BASE + "default.fmf",
-                "nzp/game.pk3": CDN_BASE + "nzp/game.pk3",
-                "nzp/progs.pk3": CDN_BASE + "nzp/progs.pk3"
+                "default.fmf": "default.fmf",
+                "nzp/game.pk3": "nzp/game.pk3",
+                "nzp/progs.pk3": "nzp/progs.pk3"
             },
             print: function (msg) { //stdout...
                 console.log(msg);
@@ -86,13 +85,13 @@
                 statusElement.innerHTML = text;
                 statusElement.hidden = text.length == 0;
             },
-            //    preRun: [],
+            //	preRun: [],
             totalDependencies: 0,
             monitorRunDependencies: function (left) { //progress is progress...
                 this.totalDependencies = Math.max(this.totalDependencies, left);
                 Module.setStatus(left ? 'Preparing... (' + (this.totalDependencies - left) + '/' + this.totalDependencies + ')' : 'All downloads complete.');
             },
-            //    onRuntimeInitialized: function(){},
+            //	onRuntimeInitialized: function(){},
             postRun: [ //each of these are called after main was run. we should have our mainloop set up now
                 function () {
                     if (Module["sched"] === undefined) { //our main function failed to set up the main loop. ie: main didn't get called. panic.
@@ -111,8 +110,8 @@
             Module.setStatus('Downloading...');
             // make a script. do it the hard way for the error.
             var s = document.createElement('script');
-            // ⚠️ CHANGE 2: Hardcode the full CDN URL for the engine script.
-            s.setAttribute('src', CDN_BASE + "ftewebgl.js");
+            // set it up
+            s.setAttribute('src', "ftewebgl.js");
             s.setAttribute('type', "text/javascript");
             s.setAttribute('charset', "utf-8");
             s.addEventListener('error', function () {
@@ -145,9 +144,8 @@
                     if (sz > 512 * 1024) sz = (sz / (1024 * 1024)) + "mb";
                     else if (sz > 512) sz = (sz / 1024) + "kb";
                     else sz = (sz) + " bytes";
-                    // The keys are still the target file names, but the value is the full CDN path.
-                    nt += "    " + keys[i] + " (" + sz + ")<br/>";
-                } else nt += "    " + keys[i] + "<br/>";
+                    nt += "    " + keys[i] + " (" + sz + ")<br/>";
+                } else nt += "    " + keys[i] + "<br/>";
             }
             nt += "</pre>(" + keys.length + " files)";
             document.getElementById('dropzone').innerHTML = nt;
@@ -172,7 +170,7 @@
             }
         }
 
-        function gotdrop(ev) { //user drag+dropped something. 
+        function gotdrop(ev) { //user drag+dropped something. 
             ev.preventDefault();
             for (var i = 0; i < ev.dataTransfer.items.length; i++)
                 if (ev.dataTransfer.items[i].webkitGetAsEntry) {
@@ -190,11 +188,10 @@
             }
             showfiles();
         }
-        if (window.location.hash != "" || Object.keys(Module.files).length) begin(); //if the url has a #foo.fmf then just begin instantly, 
+        if (window.location.hash != "" || Object.keys(Module.files).length) begin(); //if the url has a #foo.fmf then just begin instantly, 
         else showfiles(); //otherwise show our lame file dropper and wait for the user to click 'go'.
     </script>
     <img src="https://hits.sh/hits.sh/nzp-team.github.io/latest/game.html/hits.svg" style="opacity:0;width:0px;">
 </body>
 
 </html>
-
